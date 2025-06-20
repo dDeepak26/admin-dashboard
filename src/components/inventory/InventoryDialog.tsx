@@ -5,15 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { Label } from "../ui/label";
-import Inventory from "@/models/Inventory";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
-
-type Inventory = {
-    _id?: string;
-    productId: string;
-    available: number;
-    sold: number;
-}
+import { InventoryFormType } from "@/types/Inventory";
 
 type Product = {
     _id: string;
@@ -24,11 +17,11 @@ type Props = {
     open: boolean;
     onClose: () => void;
     onSuccess: () => void;
-    editData?: Inventory | null;
+    editData?: InventoryFormType | null;
 };
 
 export default function InventoryDialog({ open, onClose, onSuccess, editData }: Props) {
-    const [form, setForm] = useState<Inventory>({
+    const [form, setForm] = useState<InventoryFormType>({
         _id: "",
         productId: "",
         available: 0,

@@ -7,39 +7,25 @@ import { useState, useEffect } from "react";
 import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
 import MultiSelect from "../MultiSelect";
-
-type Product = {
-    _id?: string;
-    name: string;
-    description: string,
-    price: number;
-    stock: number;
-    categories?: string[];
-};
-
-type Category = {
-    _id: string;
-    name: string;
-    description?: string;
-}
+import { Category, ProductFormType, } from "@/types/Product";
 
 type Props = {
     open: boolean;
     onClose: () => void;
     onSuccess: () => void;
-    editData?: Product | null;
+    editData?: ProductFormType | null;
 };
 
 export default function ProductDialog({ open, onClose, onSuccess, editData }: Props) {
 
     const [categories, setCategories] = useState<Category[]>([]);
 
-    const [form, setForm] = useState<Product>({
+    const [form, setForm] = useState<ProductFormType>({
         name: "",
         description: "",
         price: 0,
         stock: 0,
-        categories: [] as string[]
+        categories: []
     });
     useEffect(() => {
         const fetchCategories = async () => {

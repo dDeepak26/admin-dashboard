@@ -12,16 +12,7 @@ import {
 } from "@/components/ui/table";
 import { Edit, Plus, Trash2 } from "lucide-react";
 import InventoryDialog from "./InventoryDialog";
-
-type Inventory = {
-    _id: string;
-    productId: {
-        _id: string;
-        name: string;
-    };
-    available: number;
-    sold: number;
-}
+import { InventoryDisplayType, InventoryFormType } from "@/types/Inventory";
 
 type Props = {
     email?: string;
@@ -29,10 +20,10 @@ type Props = {
 };
 
 export default function InventoryClient({ role }: Props) {
-    const [inventory, setInventory] = useState<Inventory[]>([]);
+    const [inventory, setInventory] = useState<InventoryDisplayType[]>([]);
     const [loading, setLoading] = useState(true);
     const [dialogOpen, setDialogOpen] = useState(false);
-    const [editInventory, setEditInventory] = useState<Inventory | null>(null);
+    const [editInventory, setEditInventory] = useState<InventoryFormType | null>(null);
 
     const refreshInventory = async () => {
         setLoading(true);
@@ -115,7 +106,12 @@ export default function InventoryClient({ role }: Props) {
                                             <Button
                                                 variant="ghost"
                                                 onClick={() => {
-                                                    setEditInventory(inventory);
+                                                    setEditInventory({
+                                                        _id: inventory._id,
+                                                        productId: inventory.productId._id,
+                                                        available: inventory.available,
+                                                        sold: inventory.sold,
+                                                    });
                                                     setDialogOpen(true);
                                                 }}
                                             >

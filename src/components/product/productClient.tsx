@@ -12,20 +12,9 @@ import {
 } from "@/components/ui/table";
 import { Edit, Plus, Trash2 } from "lucide-react";
 import ProductDialog from "@/components/product/ProductDialog";
+import { ProductDisplayType, ProductFormType } from "@/types/Product";
 
-type Category = {
-    _id: string;
-    name: string;
-};
 
-type Product = {
-    _id: string;
-    name: string;
-    description?: string;
-    price: number;
-    stock: number;
-    categories: Category[]
-};
 
 type Props = {
     email?: string;
@@ -33,10 +22,10 @@ type Props = {
 };
 
 export default function ProductClient({ role }: Props) {
-    const [products, setProducts] = useState<Product[]>([]);
+    const [products, setProducts] = useState<ProductDisplayType[]>([]);
     const [loading, setLoading] = useState(true);
     const [dialogOpen, setDialogOpen] = useState(false);
-    const [editProduct, setEditProduct] = useState<Product | null>(null);
+    const [editProduct, setEditProduct] = useState<ProductFormType | null>(null);
 
     const refreshProducts = async () => {
         setLoading(true);
@@ -123,7 +112,14 @@ export default function ProductClient({ role }: Props) {
                                             <Button
                                                 variant="ghost"
                                                 onClick={() => {
-                                                    setEditProduct(product);
+                                                    setEditProduct({
+                                                        _id: product._id,
+                                                        name: product.name,
+                                                        description: product.description || "",
+                                                        price: product.price,
+                                                        stock: product.stock,
+                                                        categories: product.categories.map(cat => cat._id),
+                                                    });
                                                     setDialogOpen(true);
                                                 }}
                                             >

@@ -1,7 +1,8 @@
-import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import type { NextAuthOptions, Session, User } from "next-auth";
+import type { JWT } from "next-auth/jwt";
 import connectToDB from "./dbconnect";
-import User from "@/models/User";
+import UserModel from "@/models/User";
 import bcrypt from "bcrypt";
 
 export const authOptions: NextAuthOptions = {
@@ -14,26 +15,48 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         await connectToDB();
+
         if (!credentials?.email || !credentials?.password) {
           throw new Error("Missing email or password");
         }
-        const user = await User.findOne({ email: credentials.email });
+
+        const user = await UserModel.findOne({ email: credentials.email });
         if (!user) throw new Error("No user found");
 
         const isValid = await bcrypt.compare(credentials.password, user.password);
         if (!isValid) throw new Error("Invalid credentials");
 
-        return { id: user._id, email: user.email, role: user.role };
+        return {
+          id: user._id.toString(),
+          email: user.email,
+          role: user.role,
+        };
       },
     }),
   ],
   callbacks: {
-    async session({ session, token }) {
-      session.user.role = token.role;
+    async session({
+      session,
+      token,
+    }: {
+      session: Session;
+      token: JWT;
+    }): Promise<Session> {
+      if (token?.role && session.user) {
+        session.user.role = token.role;
+      }
       return session;
     },
-    async jwt({ token, user }) {
-      if (user) token.role = user.role;
+    async jwt({
+      token,
+      user,
+    }: {
+      token: JWT;
+      user?: User | undefined;
+    }): Promise<JWT> {
+      if (user?.role) {
+        token.role = user.role;
+      }
       return token;
     },
   },
