@@ -14,7 +14,7 @@ export default async function CategoryPage() {
 
     return (
         <CategoryClient
-            role={(session?.user as any)?.role || ""}
+            role={session?.user?.role || ""}
         />
     )
 }

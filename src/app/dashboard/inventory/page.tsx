@@ -14,7 +14,7 @@ export default async function InventoryPage() {
 
     return (
         <InventoryClient
-            role={(session?.user as any)?.role || ""}
+            role={session?.user?.role || ""}
         />
     )
 }

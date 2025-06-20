@@ -14,7 +14,7 @@ export default async function ProductPage() {
 
     return (
         <ProductClient
-            role={(session?.user as any)?.role || ""}
+            role={session?.user?.role || ""}
         />
     )
 }
